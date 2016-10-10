@@ -1,12 +1,20 @@
-var mongoose = require('mongoose');
+/* global process */
+var Sequelize = require('sequelize');
+var settings = require('./settings');
 
-var LinkSchema = new mongoose.Schema({
-  visits: Number,
-  link: String,
-  title: String,
-  code: String,
-  base_url: String,
-  url: String
-});
+var url = process.env.DATABASE_URL || settings.DBURL;
 
-module.exports = mongoose.model('Link', LinkSchema);
+var options = process.env.DATABSE_URL ? {
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true
+    }
+  }
+} : {
+  logging: false
+};
+
+var sequelize = new Sequelize(url, options);
+
+module.exports = sequelize;
