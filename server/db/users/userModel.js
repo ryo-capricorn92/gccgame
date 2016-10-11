@@ -36,7 +36,7 @@ User.comparePassword = function (possPass, currPass) {
 User.signUp = function (username, password) {
   return User.findOne({ where: { username: username } })
     .then(function (user) {
-      if (!user) {
+      if (user) {
         return null;
       } else {
         return User.findOrCreate({
@@ -47,14 +47,6 @@ User.signUp = function (username, password) {
             return user;
           })
       }
-    })
-
-  return User.findOrCreate({
-    where: { username: username },
-    defaults: { password: password }
-  })
-    .spread(function (user, create) {
-      return user;
     });
 };
 
@@ -72,8 +64,8 @@ User.signIn = function (username, password) {
     });
 };
 
-User.getAllDogs = function (username, where) {
-  return User.findOne({ where: { username: username } })
+User.getAllDogsByOwner = function (userId, where) {
+  return User.findById(userId)
     .then(function (user) {
       if (where) {
         return user.getDogs({ where: where });
@@ -83,9 +75,15 @@ User.getAllDogs = function (username, where) {
     })
 }
 
-User.getCompanionDog = function (username) {
-  return User.findOne({ where: { username: username } })
+User.getOneDog = function (dogId, user) {
+  // return User.
+}
+
+User.getCompanionDog = function (userId) {
+  return User.findById(userId)
     .then(function (user) {
       return user.getDogs({ where: { companion: true } });
     })
 }
+
+module.exports = User;

@@ -15,6 +15,6 @@ var options = process.env.DATABSE_URL ? {
   logging: false
 };
 
-var sequelize = new Sequelize(url, options);
+var db = new Sequelize(url, options);
 
-module.exports = sequelize;
+module.exports = db;

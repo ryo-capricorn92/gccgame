@@ -10,9 +10,15 @@ app.use(express.static(__dirname + '/client'));
 app.set('views', __dirname + '/client');
 app.set('view engine', 'ejs');
 
+require('./server/routes.js')(app, express);
+
 app.get('/', function(req, res) {
   res.render('index');
 });
 var port = process.env.PORT || 3000;
 
-app.listen(port);
+db.sync().then(function () {
+  app.listen(port, function () {
+    console.log('listening to', port);
+  });
+});
