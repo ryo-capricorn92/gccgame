@@ -64,21 +64,6 @@ User.signIn = function (username, password) {
     });
 };
 
-User.getAllDogsByOwner = function (userId, where) {
-  return User.findById(userId)
-    .then(function (user) {
-      if (where) {
-        return user.getDogs({ where: where });
-      } else {
-        return user.getDogs();
-      }
-    })
-}
-
-User.getOneDog = function (dogId, user) {
-  // return User.
-}
-
 User.getCompanionDog = function (userId) {
   return User.findById(userId)
     .then(function (user) {
