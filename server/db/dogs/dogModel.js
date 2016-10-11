@@ -19,6 +19,16 @@ var Dog = db.define('dog', {
   companion: Sequelize.BOOLEAN
 });
 
+Dog.newDog = function (userId, dog) {
+  return Dog.findOrCreate({ defaults: dog })
+    .then(function (dog) {
+      return User.findById(userId)
+        .then(function (user) {
+          user.addDog(dog);
+        })
+    })
+}
+
 
 Dog.getAllDogsByOwner = function (userId, where) {
   return User.findById(userId)
