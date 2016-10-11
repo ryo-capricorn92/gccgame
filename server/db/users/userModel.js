@@ -16,10 +16,11 @@ var User = db.define('user', {
     validate: {
       notEmpty: true
     }
-  }
+  },
+  companion: Sequelize.STRING
 });
 
-User.hasMany(Dog, {as: 'Dogs'});
+User.hasMany(Dog, {as: 'Dogs', foreignKey: 'OwnerId'});
 
 User.hook('beforeCreate', function (user) {
   return bcrypt.hashAsync(user.password, null, null)
@@ -27,3 +28,64 @@ User.hook('beforeCreate', function (user) {
       user.password = hashPass;
     });
 });
+
+User.comparePassword = function (possPass, currPass) {
+  return bcrypt.compareAsync(possPass, currPass);
+};
+
+User.signUp = function (username, password) {
+  return User.findOne({ where: { username: username } })
+    .then(function (user) {
+      if (!user) {
+        return null;
+      } else {
+        return User.findOrCreate({
+          where: { username: username },
+          defaults: { password: password }
+        })
+          .spread(function (user, create) {
+            return user;
+          })
+      }
+    })
+
+  return User.findOrCreate({
+    where: { username: username },
+    defaults: { password: password }
+  })
+    .spread(function (user, create) {
+      return user;
+    });
+};
+
+User.signIn = function (username, password) {
+  return User.findOne({ where: { username: username } })
+    .then(function (user) {
+      if (!user) {
+        return null;
+      } else {
+        return User.comparePassword(password, user.password)
+        .then(function (match) {
+          return match ? user : null;
+        });
+      }
+    });
+};
+
+User.getAllDogs = function (username, where) {
+  return User.findOne({ where: { username: username } })
+    .then(function (user) {
+      if (where) {
+        return user.getDogs({ where: where });
+      } else {
+        return user.getDogs();
+      }
+    })
+}
+
+User.getCompanionDog = function (username) {
+  return User.findOne({ where: { username: username } })
+    .then(function (user) {
+      return user.getDogs({ where: { companion: true } });
+    })
+}
