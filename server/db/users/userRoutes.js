@@ -32,5 +32,21 @@ module.exports = {
           res.json({ token: token, user: user });
         }
       });
+  },
+
+  userCompanion:  function (req, res) {
+    var userId = jwt.decode(req.headers['x-access-token'], secret).id;
+    User.getCompanionDog(userId)
+      .then(function (companion) {
+        res.json(companion);
+      });
+  },
+
+  otherCompanion:  function (req, res) {
+    var userId = req.body.id;
+    User.getCompanionDog(userId)
+      .then(function (companion) {
+        res.json(companion);
+      });
   }
 }
