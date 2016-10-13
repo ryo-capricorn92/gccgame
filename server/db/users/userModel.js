@@ -2,7 +2,6 @@ var Sequelize = require('sequelize');
 var bluebird = require('bluebird');
 var bcrypt = bluebird.promisifyAll(require('bcrypt-nodejs'));
 var db = require('../db');
-var Dog = require('../dogs/dogModel');
 
 var User = db.define('user', {
   username: {
@@ -20,8 +19,6 @@ var User = db.define('user', {
   companion: Sequelize.STRING
 });
 
-User.hasMany(Dog, {as: 'Dogs', foreignKey: 'OwnerId'});
-
 User.hook('beforeCreate', function (user) {
   return bcrypt.hashAsync(user.password, null, null)
     .then(function (hashPass) {
@@ -32,6 +29,10 @@ User.hook('beforeCreate', function (user) {
 User.comparePassword = function (possPass, currPass) {
   return bcrypt.compareAsync(possPass, currPass);
 };
+
+User.findById = function (id) {
+  return User.findOne({ where: { id: id } });
+}
 
 User.signUp = function (username, password) {
   return User.findOne({ where: { username: username } })

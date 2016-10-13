@@ -20,11 +20,14 @@ var Dog = db.define('dog', {
 });
 
 Dog.newDog = function (userId, dog) {
-  return Dog.findOrCreate({ defaults: dog })
+  return Dog.create(dog)
     .then(function (dog) {
-      return User.findById(userId)
+      console.log(User);
+      return User.findOne({ where: { id: userId } })
         .then(function (user) {
           user.addDog(dog);
+          user.save();
+          return dog;
         })
     })
 }
@@ -60,5 +63,7 @@ Dog.getBreedableBitches = function (userId) {
 Dog.getBreedableDogs = function (userId) {
   return Dog.getAllDogsByOwner(userId, { age: { gt: 23 }, cooldown: 0, gender: 'male' });
 }
+
+User.hasMany(Dog, {as: 'Dogs', foreignKey: 'OwnerId'});
 
 module.exports = Dog;

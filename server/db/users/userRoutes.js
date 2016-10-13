@@ -35,11 +35,11 @@ module.exports = {
   },
 
   userCompanion:  function (req, res) {
-    var userId = jwt.decode(req.headers['x-access-token'], secret).id;
+    var userId = jwt.decode(JSON.parse(req.headers['x-access-token']), secret).id;
     User.getCompanionDog(userId)
       .then(function (companion) {
         res.json(companion);
-      });
+      })
   },
 
   otherCompanion:  function (req, res) {
