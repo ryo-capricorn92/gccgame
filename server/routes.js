@@ -9,6 +9,6 @@ module.exports = function (app, express) {
   app.get('/dogs/adults', dogRoutes.getAdultDogs);
   app.get('/dogs/puppies', dogRoutes.getPuppyDogs);
   app.get('/dogs/breedable', dogRoutes.getAllBreedableDogs);
-  app.get('/dogs/breedable/bitches', dogRoutes.getBreedableBitchs);
+  app.get('/dogs/breedable/bitches', dogRoutes.getBreedableBitches);
   app.get('/dogs/breedable/dogs', dogRoutes.getBreedableDogs);
 }
