@@ -21,16 +21,20 @@ var Dog = db.define('dog', {
 
 Dog.newDog = function (userId, dog) {
   return Dog.create(dog)
-    .then(function (dog) {
-      console.log(User);
+    .then(function (newDog) {
       return User.findOne({ where: { id: userId } })
         .then(function (user) {
-          user.addDog(dog);
-          user.save();
-          return dog;
-        })
-    })
-}
+          return user.addDog(newDog)
+            .then(function (user) {
+              return user.save()
+                .then(function (user) {
+                  newDog.OwnerId = user.id;
+                  return newDog;
+                })
+            });
+        });
+    });
+};
 
 
 Dog.getAllDogsByOwner = function (userId, where) {
@@ -64,6 +68,6 @@ Dog.getBreedableDogs = function (userId) {
   return Dog.getAllDogsByOwner(userId, { age: { gt: 23 }, cooldown: 0, gender: 'male' });
 }
 
-User.hasMany(Dog, {as: 'Dogs', foreignKey: 'OwnerId'});
+User.hasMany(Dog, { foreignKey: 'OwnerId' });
 
 module.exports = Dog;
