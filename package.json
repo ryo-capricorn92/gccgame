@@ -17,6 +17,10 @@
     "url": "https://github.com/ryo-capricorn92/gccgame/issues"
   },
   "homepage": "https://github.com/ryo-capricorn92/gccgame#readme",
+  "engines": {
+    "node": "6.2.2",
+    "npm": "3.9.5"
+  },
   "dependencies": {
     "angular": "^1.5.8",
     "angular-cookies": "^1.5.8",
